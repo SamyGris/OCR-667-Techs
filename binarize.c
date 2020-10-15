@@ -3,7 +3,13 @@
 Uint32 greyscale(Uint32 color)
 {
   //  Calcule une moyenne pondérée des trois couleurs
-  printf("%ld", 5);
+  string str := fmt.Sprint(color);
+  string sr = str[0] + str[1] + str[2];
+  string sg = str[3] + str[4] + str[5];
+  string sb = str[6] + str[7] + str[8];
+  int red = atoi(sr);
+  int green = atoi(sg);
+  int blue = atoi(sb);
   return ((red + green + blue)/3);
 }
 
