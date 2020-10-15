@@ -3,12 +3,21 @@
 int greyscale(int red, int green, int blue)
 {
   //  Calcule une moyenne pondérée des trois couleurs
-  return 0;
+  return ((red + green + blue)/3);
 }
 
 SDL_Surface greyscaleSurface(SDL_Surface image)
 {
   // Applique la fonction greyscale à chaque pixel de l'image
+  w = image->w;
+  h = image->h;
+  for (int y = 0; i=h; i++)
+    {
+      for (int x = 0; i=w; i++)
+	{
+	  pixel = SDL_GetRGB(GetPixel(image, x, y));
+	  
+	  
   return image;
 }
 
