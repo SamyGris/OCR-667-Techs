@@ -3,6 +3,7 @@
 int greyscale(int red, int green, int blue)
 {
   //  Calcule une moyenne pondérée des trois couleurs
+  printf("%ld", 5);
   return ((red + green + blue)/3);
 }
 
@@ -15,7 +16,7 @@ SDL_Surface greyscaleSurface(SDL_Surface image)
     {
       for (int x = 0; i=w; i++)
 	{
-	  pixel = SDL_GetRGB(GetPixel(image, x, y));
+	pixel = SDL_GetRGB(GetPixel(image, x, y));
 	  
 	  
   return image;
@@ -40,5 +41,7 @@ SDL_Surface binarizeSurface(SDL_Surface image)
     {
       for(j = 0; j < w; j++)
 	{
-	  SDL_MapRGBA(format, (Uint8)i, 0, 0, 255)
+	  putpixel(image, x, y, getpixel(image, x, y));
+	}
+    }
 }
