@@ -2,7 +2,7 @@
 
 int greyscale(int red, int green, int blue)
 {
-  // Calcule une moyenne pondérée des trois couleurs
+  //  Calcule une moyenne pondérée des trois couleurs
   return 0;
 }
 
