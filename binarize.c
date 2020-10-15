@@ -28,6 +28,20 @@ SDL_Surface* greyscaleSurface(SDL_Surface *image)
   return image;
 }
 
+
+int median(SDL_Surface *image, int x, int y)
+{
+
+	// change la valeur de gris d'un pixel par la moyenne des pixel autour
+	return 0;
+}
+
+SDL_Surface* noiseCancelling(SDL_Surface *image)
+{
+	// Applique median a tous les pixels de l'images
+	return image;
+}
+
 int binarize(int grey)
 {
   // Détermine si le niveau de gris indiqué correspond à du blanc ou du noir
