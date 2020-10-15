@@ -3,7 +3,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 
-#include "greyscale.h"
+#include "binarize.h"
 
 void pause();
 
@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
    ecran = SDL_SetVideoMode(image->w, image->h, 32, SDL_HWSURFACE);
    SDL_WM_SetCaption("OCR Project (667 Techs)", NULL);
 
-   image = greyscaleSurface(image);
+   image = binarizeSurface(*image);
    
    SDL_BlitSurface(image, NULL, ecran, &position);
 
