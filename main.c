@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 #include "binarize.h"
 
@@ -12,25 +12,32 @@ int main(int argc, char *argv[])
    if (argc != 2)
      return EXIT_FAILURE;
   
-   SDL_Surface *ecran = NULL, *image = NULL;
+   SDL_Window *ecran = NULL;
+   SDL_Renderer *renderer = NULL;
+   SDL_Surface *image = NULL;
    image = IMG_Load(argv[1]);
-   SDL_Rect position;
-   position.x = 0;
-   position.y = 0;
 
    SDL_Init(SDL_INIT_VIDEO);
-   ecran = SDL_SetVideoMode(image->w, image->h, 32, SDL_HWSURFACE);
-   SDL_WM_SetCaption("OCR Project (667 Techs)", NULL);
+     
+   ecran = SDL_CreateWindow("OCR Project (667 Techs)", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, image->w, image->h, SDL_WINDOW_SHOWN);
 
-   image = binarizeSurface(*image);
+   renderer = SDL_CreateRenderer(ecran, -1, SDL_RENDERER_ACCELERATED);
+
+   if(NULL == renderer)
+     {
+       fprintf(stderr, "Erreur SDL_CreateRenderer : %s", SDL_GetError());
+       return EXIT_FAILURE;
+     }
    
-   SDL_BlitSurface(image, NULL, ecran, &position);
+   image = binarizeSurface(image);
 
-   SDL_Flip(ecran);
+   SDL_CreateTextureFromSurface(renderer, image);
+
    pause();
 
-
+   SDL_DestroyRenderer(renderer);
    SDL_FreeSurface(image);
+   SDL_DestroyWindow(ecran);
    SDL_Quit();
 
    return EXIT_SUCCESS;

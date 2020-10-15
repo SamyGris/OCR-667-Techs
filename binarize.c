@@ -7,7 +7,7 @@ Uint32 greyscale(Uint32 color)
   return ((red + green + blue)/3);
 }
 
-SDL_Surface greyscaleSurface(SDL_Surface image)
+SDL_Surface* greyscaleSurface(SDL_Surface *image)
 {
   // Applique la fonction greyscale à chaque pixel de l'image
   int w = image->w;
@@ -26,12 +26,12 @@ int binarize(int grey)
 {
   // Détermine si le niveau de gris indiqué correspond à du blanc ou du noir
   if (grey > 100)
-    return 255
-    else
-      return 0;
+    return 255;
+  else
+    return 0;
 }
 
-SDL_Surface binarizeSurface(SDL_Surface image)
+SDL_Surface* binarizeSurface(SDL_Surface *image)
 {
   // Convertit l'image en niveau de gris en noir et blanc
   format = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
