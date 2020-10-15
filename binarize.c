@@ -1,6 +1,6 @@
 #include <SDL/SDL.h>
 
-int greyscale(int red, int green, int blue)
+Uint32 greyscale(Uint32 color)
 {
   //  Calcule une moyenne pondérée des trois couleurs
   printf("%ld", 5);
@@ -10,15 +10,15 @@ int greyscale(int red, int green, int blue)
 SDL_Surface greyscaleSurface(SDL_Surface image)
 {
   // Applique la fonction greyscale à chaque pixel de l'image
-  w = image->w;
-  h = image->h;
+  int w = image->w;
+  int h = image->h;
   for (int y = 0; i=h; i++)
     {
       for (int x = 0; i=w; i++)
 	{
-	pixel = SDL_GetRGB(GetPixel(image, x, y));
-	  
-	  
+	  putpixel(image, x, y, greyscale(getpixel(image, x, y)));
+	}
+    }
   return image;
 }
 
@@ -37,9 +37,9 @@ SDL_Surface binarizeSurface(SDL_Surface image)
   format = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
   int h = image->h;
   int w = image->w;
-  for(i = 0; i < h; i++)
+  for(x = 0; x < w; x++)
     {
-      for(j = 0; j < w; j++)
+      for(y = 0; y < h; y++)
 	{
 	  putpixel(image, x, y, getpixel(image, x, y));
 	}
