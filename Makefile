@@ -1,27 +1,21 @@
-# Makefile
+# Simple SDL mini Makefile
 
-CPPFLAGS = -MMD
-CC = gcc
-CFLAGS = -Wall -Wextra -Werror -std=c99 -O2
-LDFLAGS =
-LDLIBS = `sdl-config --cflags --libs` -lSDL_image
+CC=gcc
 
-SRC = main.c binarize.c
-OBJ = ${SRC:.c=.o}
-DEP = ${SRC:.c=.d}
+CPPFLAGS= `pkg-config --cflags sdl` -MMD
+CFLAGS= -Wall -Wextra -Werror -std=c99 -O3
+LDFLAGS=
+LDLIBS= `pkg-config --libs sdl` -lSDL_image
 
-all: main
+all: display
 
-main: ${OBJ}
+display: pixel_operations.o grayscale.o display.o
 
-run: all
-	./main
-
-.PHONY: clean
+display.o: grayscale.h pixel_operations.h
 
 clean:
-	${RM} ${OBJ}   # remove object files
-	${RM} ${DEP}   # remove dependency files
-	${RM} main     # remove main program
+	${RM} *.o
+	${RM} *.d
+	${RM} *~
 
--include ${DEP}
+# END
