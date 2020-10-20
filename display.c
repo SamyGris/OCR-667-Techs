@@ -52,6 +52,12 @@ int main(int argc, char** argv)
     update_surface(screen_surface, image_surface);
 
     pause();
+
+    image_surface = increaseChar(image_surface);
+
+    update_surface(screen_surface, image_surface);
+
+    pause();
     
     SDL_FreeSurface(image_surface);
     SDL_FreeSurface(screen_surface);
