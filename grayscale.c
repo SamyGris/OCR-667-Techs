@@ -32,7 +32,7 @@ SDL_Surface* segment(SDL_Surface* image_surface)
 	    Uint32 pixel = get_pixel(image_surface, x, y);
 
 	    Uint8 grey;
-	    SDL_GetRGB(pixel, image_surface->format, &glsrey, &grey, &grey);
+	    SDL_GetRGB(pixel, image_surface->format, &grey, &grey, &grey);
 
 	    if (grey > 100)
 	      grey = 255;

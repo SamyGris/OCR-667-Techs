@@ -9,12 +9,11 @@ LDLIBS= `pkg-config --libs sdl` -lSDL_image
 
 all: display
 
-display: pixel_operations.o grayscale.o display.o
+display: noise_cancel.o pixel_operations.o grayscale.o display.o
 
-display.o: grayscale.h pixel_operations.h
+display.o: noise_cancel.h grayscale.h pixel_operations.h
 
-clean:
-	${RM} *.o
+clean:	${RM} *.o
 	${RM} *.d
 	${RM} *~
 

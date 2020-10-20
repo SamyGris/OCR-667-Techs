@@ -3,6 +3,7 @@
 #include "SDL/SDL_image.h"
 #include "grayscale.h"
 #include "pixel_operations.h"
+#include "noise_cancel.h"
 
 void pause();
 
@@ -38,6 +39,12 @@ int main(int argc, char** argv)
 
     // Update the screen
     SDL_UpdateRect(screen_surface, 0, 0, image_surface->w, image_surface->h);
+    
+    pause();
+
+    image_surface = noise_canceled(image_surface);
+    
+    update_surface(screen_surface, image_surface);
     
     pause();
 
