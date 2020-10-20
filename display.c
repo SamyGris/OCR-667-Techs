@@ -4,6 +4,8 @@
 #include "grayscale.h"
 #include "pixel_operations.h"
 
+void pause();
+
 int main(int argc, char** argv)
 {
     if (argc != 2)
@@ -36,26 +38,31 @@ int main(int argc, char** argv)
 
     // Update the screen
     SDL_UpdateRect(screen_surface, 0, 0, image_surface->w, image_surface->h);
-
-    SDL_Event event;
-
-    // Wait for a key to be down.
-    do
-    {
-        SDL_PollEvent(&event);
-    } while(event.type != SDL_KEYDOWN);
-
-    // Wait for a key to be up.
-    do
-    {
-        SDL_PollEvent(&event);
-    } while(event.type != SDL_KEYUP);
+    
+    pause();
 
     image_surface = grayscale(image_surface);
 
     update_surface(screen_surface, image_surface);
 
-    do
+    pause();
+
+    image_surface = segment(image_surface);
+
+    update_surface(screen_surface, image_surface);
+
+    pause();
+    
+    SDL_FreeSurface(image_surface);
+    SDL_FreeSurface(screen_surface);
+    return 0;
+}
+
+void pause()
+{
+    SDL_Event event;
+    // Wait for a key to be down.
+     do
     {
         SDL_PollEvent(&event);
     } while(event.type != SDL_KEYDOWN);
@@ -66,7 +73,4 @@ int main(int argc, char** argv)
         SDL_PollEvent(&event);
     } while(event.type != SDL_KEYUP);
     
-    SDL_FreeSurface(image_surface);
-    SDL_FreeSurface(screen_surface);
-    return 0;
 }
