@@ -42,13 +42,13 @@ int main(int argc, char** argv)
     
     pause();
 
-    image_surface = noise_canceled(image_surface);
+    image_surface = grayscale(image_surface);
     
     update_surface(screen_surface, image_surface);
     
     pause();
 
-    image_surface = grayscale(image_surface);
+    image_surface = noise_canceled(image_surface);
 
     update_surface(screen_surface, image_surface);
 

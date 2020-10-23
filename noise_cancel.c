@@ -27,9 +27,9 @@ Uint32 getNewPixel(SDL_Surface *image, int x, int y)
         Uint32 grayscaleArr[9];
         for (int i = -1; i < 2; i++)
         {
-                for (int j = -1; j < 2; i++)
+                for (int j = -1; j < 2; j++)
                 {
-                        grayscaleArr[iArr] = get_pixel(image, x+i, y+i);
+                        grayscaleArr[iArr] = get_pixel(image, x+i, y+j);
                         iArr++;
                 }
         }
