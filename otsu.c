@@ -63,7 +63,7 @@ int otsu(Uint8* hist)
 {
     float vw = -1;
     int vw_t = 0;
-    for (int t = 0; t<256; t++)
+    for (int t = 0; t<255; t++)
     {
         Uint8 hist2[255-t];
 	Uint8 hist1[t+1];
