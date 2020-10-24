@@ -3,7 +3,8 @@
 #include "SDL/SDL_image.h"
 #include "grayscale.h"
 #include "pixel_operations.h"
-#include "noise_cancel.h"
+#include "median.h"
+#include "otsu.h"
 
 void pause();
 
@@ -43,9 +44,9 @@ int main(int argc, char** argv)
     pause();
 
     image_surface = grayscale(image_surface);
-    
+
     update_surface(screen_surface, image_surface);
-    
+
     pause();
 
     image_surface = noise_canceled(image_surface);
@@ -54,18 +55,13 @@ int main(int argc, char** argv)
 
     pause();
 
-    image_surface = segment(image_surface);
+    image_surface = black_n_white(image_surface);
 
     update_surface(screen_surface, image_surface);
 
     pause();
 
-    image_surface = increaseChar(image_surface);
 
-    update_surface(screen_surface, image_surface);
-
-    pause();
-    
     SDL_FreeSurface(image_surface);
     SDL_FreeSurface(screen_surface);
     return 0;

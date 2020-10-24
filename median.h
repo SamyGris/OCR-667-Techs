@@ -1,5 +1,5 @@
-#ifndef NOISE_CANCEL_H
-#define NOISE_CANCEL_H
+#ifndef MEDIAN_H
+#define MEDIAN_H
 
 void swapGrayscale(Uint32 grayscaleArr[], int i, int j);
 Uint32 getMedian(Uint32 grayscaleArr[]);
