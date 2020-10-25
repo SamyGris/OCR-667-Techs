@@ -48,11 +48,11 @@ int main(int argc, char** argv)
 
     update_surface(screen_surface, image_surface);
 
-    pause();
+    /*pause();
 
     image_surface = noise_canceled(image_surface);
 
-    update_surface(screen_surface, image_surface);
+    update_surface(screen_surface, image_surface);*/
 
     pause();
 
@@ -64,42 +64,49 @@ int main(int argc, char** argv)
     
     int w = image_surface->w;
     int h = image_surface->h;
-    int **data;
-    data = (int **) malloc(sizeof(int *) * h);
-    for (int i = 0; i < h; i++) data[i] = (int*) malloc(sizeof(int) * w);
-    for (int i = 0; i < h; i++) for (int j = 0; j < w; j++) data[i][j] = 0;
 
-    data = set_matrix(image_surface, data);
+    int **data_h;
+    data_h = (int **) malloc(sizeof(int *) * h);
+    for (int i = 0; i < h; i++) data_h[i] = (int*) malloc(sizeof(int) * w);
+    for (int i = 0; i < h; i++) for (int j = 0; j < w; j++) data_h[i][j] = 0;
+    
+    int **data_v;
+    data_v = (int **) malloc(sizeof(int *) * h);
+    for (int i = 0; i < h; i++) data_v[i] = (int*) malloc(sizeof(int) * w);
+    for (int i = 0; i < h; i++) for (int j = 0; j < w; j++) data_v[i][j] = 0;
+
+    data_h = set_matrix(image_surface, data_h);
+    data_v = set_matrix(image_surface, data_v);
     for (int i = 0; i<h; i++)
     {
 	    for (int j = 0; j<w; j++)
 	    {
-		    printf("%d ", data[i][j]);
+		    printf("%d ", data_h[i][j]);
 	    }
 	    printf("%s","\n");
     }
     printf("%s","\n");
 
-    data = rlsa_horizontal(data, h, w, 4);
+    data_h = rlsa_vertical(data_h, h, w, 7);
     for (int i = 0; i<h; i++)
     {
 	    for (int j = 0; j<w; j++)
 	    {
-		    printf("%d ", data[i][j]);
+		    printf("%d ", data_h[i][j]);
 	    }
 	    printf("%s","\n");
     }
-    /*printf("%s","\n");
+    printf("%s","\n");
 
-    rlsa_vertical(data, h, w, 3);
+    data_v = rlsa_horizontal(data_v, h, w, 7);
     for (int i = 0; i<h; i++)
     {
 	    for (int j = 0; j<w; j++)
 	    {
-		    printf("%d ", data[i][j]);
+		    printf("%d ", data_v[i][j]);
 	    }
 	    printf("%s","\n");
-    }*/
+    }
 
     pause();
 

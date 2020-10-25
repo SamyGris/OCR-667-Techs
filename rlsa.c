@@ -22,7 +22,7 @@ int** set_matrix(SDL_Surface* image_surface, int** bin_arr)
 /* if we are analizing weigth, w_or_h = 0 for heigth w_or_h = 1 */
 int is_switch(int** bin_arr, int i, int j, int size, int w_or_h, int c)
 {
-	printf("is_switch (l: %d, c: %d) %s", i, j, "(");
+	/*printf("is_switch (l: %d, c: %d) %s", i, j, "(");*/
 	int sum = 0;
 	if ( w_or_h == 0 )
 	{
@@ -31,10 +31,10 @@ int is_switch(int** bin_arr, int i, int j, int size, int w_or_h, int c)
 		while ( x < size && x < c+j && fail == 0)
 		{
 			fail = bin_arr[i][x];
-			printf("%d",(char)bin_arr[i][x]);
+			/*printf("%d",(char)bin_arr[i][x]);i*/
 			x++;
 		}
-		if (x < c || fail == 1) sum = 1; 
+		if (x < c+j || fail == 1) sum = 1; 
 	}
 	else
 	{
@@ -43,12 +43,12 @@ int is_switch(int** bin_arr, int i, int j, int size, int w_or_h, int c)
 		while (y < size && y < c+i && fail == 0)
 		{
 			fail = bin_arr[y][j];
-			printf("%d",(char)bin_arr[y][j]);
+			/*printf("%d",(char)bin_arr[y][j]);*/
 			y++;
 		}
-		if (y < c || fail == 1) sum = 1; 
+		if (y < c+i || fail == 1) sum = 1; 
 	}
-	printf(") : %d\n", sum);
+	/*printf(") : %d\n", sum);*/
 	return sum;
 }	
 
@@ -57,7 +57,7 @@ int** rlsa_horizontal(int** bin_arr, int h, int w, int c)
 	int swtch = -1;
 	for (int i = 0; i < h; i++)
 	{
-		printf("Line %d :\n",i);
+		/*printf("Line %d :\n",i);*/
 		for (int j = 0; j < w; j++)
 		{
 			if (bin_arr[i][j] == 0 )
@@ -67,7 +67,8 @@ int** rlsa_horizontal(int** bin_arr, int h, int w, int c)
 			}
 			else swtch = -1;
 		}
-		printf("%s","\n");
+		swtch = -1;
+		/*printf("%s","\n");*/
 	}
 	return bin_arr;
 }
@@ -75,18 +76,20 @@ int** rlsa_horizontal(int** bin_arr, int h, int w, int c)
 
 int** rlsa_vertical(int** bin_arr, int h, int w, int c)
 {
-	int swtch = 0;
-	for (int i = 0; i < h; i++)
+	int swtch = -1;
+	for (int j = 0; j < w; j++)
 	{
-		for (int j = 0; j < w; j++)
+		/*printf("Column %d :\n",j);*/
+		for (int i = 0; i < h; i++)
 		{
 			if (bin_arr[i][j] == 0 )
 			{
-				if (swtch == 0) swtch = is_switch(bin_arr, i, j, h, 1, c);
-				if (swtch == 0) bin_arr[i][j] = 1;
+				if (swtch == -1) swtch = is_switch(bin_arr, i, j, h, 1, c);
+				if (swtch == 1) bin_arr[i][j] = 1;
 			}
-			else swtch = 0;
+			else swtch = -1;
 		}
+		swtch = -1;
 	}
 	return bin_arr;
 }
