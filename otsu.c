@@ -55,7 +55,6 @@ float variance_intra_classe(Uint8* class1, Uint8* class2, int size1)
     int nb_pixel = data1[0]+data2[0];
     float vw = ((float)data1[0]/(float)nb_pixel)*variance(class1, size1+1, data1)+((float)data2[0]/(float)nb_pixel)*variance(class2, 256-size1, data2);
 
-    printf("VIA return var = %f\n",vw);
     return vw;
 }
 
@@ -72,16 +71,13 @@ int otsu(Uint8* hist)
 		if (i <= t) hist1[i] = hist[i];
 		else hist2[i-t-1] = hist[i];	
 	}
-	printf("For t = %d :", t);
 	float vw_tmp = variance_intra_classe(hist1, hist2, t);
 	if (vw_tmp < vw || vw < 0)
 	{
-		printf("       vw switch from %f to %f with seuil = %d\n", vw, vw_tmp, t);
 		vw = vw_tmp;
 		vw_t = t;
 	}
     }
-    printf("Seuil = %d\n", vw_t);
     return vw_t;
 }
 

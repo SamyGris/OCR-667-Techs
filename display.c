@@ -5,6 +5,7 @@
 #include "pixel_operations.h"
 #include "median.h"
 #include "otsu.h"
+#include "rlsa.h"
 
 void pause();
 
@@ -60,7 +61,47 @@ int main(int argc, char** argv)
     update_surface(screen_surface, image_surface);
 
     pause();
+    
+    int w = image_surface->w;
+    int h = image_surface->h;
+    int **data;
+    data = (int **) malloc(sizeof(int *) * h);
+    for (int i = 0; i < h; i++) data[i] = (int*) malloc(sizeof(int) * w);
+    for (int i = 0; i < h; i++) for (int j = 0; j < w; j++) data[i][j] = 0;
 
+    data = set_matrix(image_surface, data);
+    for (int i = 0; i<h; i++)
+    {
+	    for (int j = 0; j<w; j++)
+	    {
+		    printf("%d ", data[i][j]);
+	    }
+	    printf("%s","\n");
+    }
+    printf("%s","\n");
+
+    data = rlsa_horizontal(data, h, w, 4);
+    for (int i = 0; i<h; i++)
+    {
+	    for (int j = 0; j<w; j++)
+	    {
+		    printf("%d ", data[i][j]);
+	    }
+	    printf("%s","\n");
+    }
+    /*printf("%s","\n");
+
+    rlsa_vertical(data, h, w, 3);
+    for (int i = 0; i<h; i++)
+    {
+	    for (int j = 0; j<w; j++)
+	    {
+		    printf("%d ", data[i][j]);
+	    }
+	    printf("%s","\n");
+    }*/
+
+    pause();
 
     SDL_FreeSurface(image_surface);
     SDL_FreeSurface(screen_surface);
