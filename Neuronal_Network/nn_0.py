@@ -41,8 +41,8 @@ donnees_entrainement_AND = [
 
 
 # Le jeux de données avec le résultat attentu pour un XOR
-donnees_entrainement_XOR = [
-    (np.array([0,0,1]), 0),
+donnees_entrainement_notA_OR_notB = [
+    (np.array([0,0,1]), 1),
     (np.array([0,1,1]), 1),
     (np.array([1,0,1]), 1),
     (np.array([1,1,1]), 0),
@@ -52,8 +52,6 @@ donnees_entrainement_XOR = [
 # Elle prend en entrée la valeur des poids
 # Et les valeurs d''entrée des neurones (les entrée + le biais)
 def pre_activation(poids, valeurs_entrees):
-    print(poids)
-    print(valeurs_entrees)
     # On réalise le produit scalaire (dot product)
     produit_scalaire = poids.T.dot(valeurs_entrees)
     return produit_scalaire
@@ -67,7 +65,6 @@ def fonction_d_activation(produit_scalaire):
 # La prédiction consiste à prévoir la valeur attendue en sortie en fontion
 # des valeurs d'entrée et des poids
 def faire_une_prediction(poids, valeurs_entrees):
-    print (valeurs_entrees)
     produit_scalaire = pre_activation(poids, valeurs_entrees)
     prediction = fonction_d_activation(produit_scalaire)
     return prediction
@@ -103,11 +100,13 @@ def entrainement_du_model(donnees_entrainement, nombre_epoch=10, taux_apprentiss
             poids = poids + taux_apprentissage * erreur * valeurs_entrees
             #print("input=", valeurs_entrees, "produit_scalaire=", produit_scalaire, " poids=",poids," resultat_attendu=", resultat_attendu, " fonction_d_activation(produit_scalaire)=", fonction_d_activation(produit_scalaire), " erreur=", erreur)
     print("Erreurs = ", historique_des_erreurs)
-    # On affiche le graph de l'évolution de l'erreur
+    
+    """# On affiche le graph de l'évolution de l'erreur
     from pylab import plot, ylim, show
     ylim([-1,1])
     plot(historique_des_erreurs)
-    show()
+    show()"""
+
     return poids
 
 def utilisation_du_model(poids, donnees):
@@ -141,22 +140,22 @@ poids_calcules = entrainement_du_model(donnees_entrainement, nombre_epoch=5)
 print("poids_calcules pour XOR : ", poids_calcules)
 utilisation_du_model(poids_calcules, donnees_entrainement)"""
 
-valeur_utilisateur = [1., 0.]
-print(valeur_utilisateur)
-#print(faire_une_prediction(np.array([ 2.,  1., -3.]), valeur_utilisateur))
+valeur_utilisateur = [1, 1]
+
 
 def xor(valeur_utilisateur):
 
-    print(valeur_utilisateur)
-    poids_calcules1 = entrainement_du_model(donnees_entrainement_AND, nombre_epoch = 8)
-    poids_calcules2 = entrainement_du_model(donnees_entrainement_AND, nombre_epoch = 8)
-    poids_calcules3 = entrainement_du_model(donnees_entrainement_OR, nombre_epoch = 8)
+    poids_calcules1 = entrainement_du_model(donnees_entrainement_OR, nombre_epoch = 8)
+    poids_calcules2 = entrainement_du_model(donnees_entrainement_notA_OR_notB, nombre_epoch = 8)
+    poids_calcules3 = entrainement_du_model(donnees_entrainement_AND, nombre_epoch = 8)
     
     #on calcule l'entree donnee a notre porte OR [x,y]
-    print(valeur_utilisateur)
     valeur_utilisateur.append(1)
     x = faire_une_prediction(poids_calcules1, valeur_utilisateur)
     y = faire_une_prediction(poids_calcules2, valeur_utilisateur)
+    if x==0:
+        x=1
+    
     l = np.array([x, y, 1])
 
     #On donne [x, y] a notre porte OR
@@ -164,6 +163,6 @@ def xor(valeur_utilisateur):
 
     return res_xor
 
-print("Le résultat xor de [0,1] est : ", xor(valeur_utilisateur))
+print("Le résultat xor de ", valeur_utilisateur, " est : ", xor(valeur_utilisateur))
         
 
