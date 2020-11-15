@@ -1,6 +1,5 @@
 #!/usr/bin/python3.5
 # -*- coding: UTF-8 -*-
-from random import choice
 import numpy as np
 
 
@@ -98,8 +97,8 @@ def entrainement_du_model(donnees_entrainement, nombre_epoch=10, taux_apprentiss
             # Cette erreur est multipliée par le taux d'aprentissage et les valeurs d'entrées,
             # pour estimer les poids pour la prochaine itération.
             poids = poids + taux_apprentissage * erreur * valeurs_entrees
-            #print("input=", valeurs_entrees, "produit_scalaire=", produit_scalaire, " poids=",poids," resultat_attendu=", resultat_attendu, " fonction_d_activation(produit_scalaire)=", fonction_d_activation(produit_scalaire), " erreur=", erreur)
-    print("Erreurs = ", historique_des_erreurs)
+            
+    #print("Erreurs = ", historique_des_erreurs)
     
     """# On affiche le graph de l'évolution de l'erreur
     from pylab import plot, ylim, show
@@ -140,7 +139,7 @@ poids_calcules = entrainement_du_model(donnees_entrainement, nombre_epoch=5)
 print("poids_calcules pour XOR : ", poids_calcules)
 utilisation_du_model(poids_calcules, donnees_entrainement)"""
 
-valeur_utilisateur = [1, 1]
+valeur_utilisateur = [[0, 0],[1,0],[0,1],[1,1]]
 
 
 def xor(valeur_utilisateur):
@@ -153,16 +152,16 @@ def xor(valeur_utilisateur):
     valeur_utilisateur.append(1)
     x = faire_une_prediction(poids_calcules1, valeur_utilisateur)
     y = faire_une_prediction(poids_calcules2, valeur_utilisateur)
-    if x==0:
-        x=1
     
     l = np.array([x, y, 1])
 
     #On donne [x, y] a notre porte OR
     res_xor = faire_une_prediction(poids_calcules3, l)
+    valeur_utilisateur.pop()
 
     return res_xor
 
-print("Le résultat xor de ", valeur_utilisateur, " est : ", xor(valeur_utilisateur))
+for val in valeur_utilisateur:
+    print("Le résultat xor de ", val, " est : ", xor(val))
         
 
