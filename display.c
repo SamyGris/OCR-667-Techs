@@ -48,11 +48,11 @@ int main(int argc, char** argv)
 
     update_surface(screen_surface, image_surface);
 
-    /*pause();
+    pause();
 
     image_surface = noise_canceled(image_surface);
 
-    update_surface(screen_surface, image_surface);*/
+    update_surface(screen_surface, image_surface);
 
     pause();
 
@@ -65,50 +65,59 @@ int main(int argc, char** argv)
     int w = image_surface->w;
     int h = image_surface->h;
 
-    int **data_h;
-    data_h = (int **) malloc(sizeof(int *) * h);
-    for (int i = 0; i < h; i++) data_h[i] = (int*) malloc(sizeof(int) * w);
-    for (int i = 0; i < h; i++) for (int j = 0; j < w; j++) data_h[i][j] = 0;
-    
-    int **data_v;
-    data_v = (int **) malloc(sizeof(int *) * h);
-    for (int i = 0; i < h; i++) data_v[i] = (int*) malloc(sizeof(int) * w);
-    for (int i = 0; i < h; i++) for (int j = 0; j < w; j++) data_v[i][j] = 0;
 
-    data_h = set_matrix(image_surface, data_h);
-    data_v = set_matrix(image_surface, data_v);
+    int **lines;
+    lines = (int **) malloc(sizeof(int *) * h);
+    for (int i = 0; i < h; i++) lines[i] = (int*) malloc(sizeof(int) * w);
+
+    int **paragraph;
+    paragraph = (int **) malloc(sizeof(int *) * h);
+    for (int i = 0; i < h; i++) paragraph[i] = (int*) malloc(sizeof(int) * w);
+
+    lines = set_matrix(image_surface, lines);
+
     for (int i = 0; i<h; i++)
     {
 	    for (int j = 0; j<w; j++)
 	    {
-		    printf("%d ", data_h[i][j]);
+		    if (lines[i][j] == 1) printf("\033[0;31m");
+		    printf("%d", lines[i][j]);
+		    if (lines[i][j] == 1) printf("\033[0m");
 	    }
 	    printf("%s","\n");
     }
     printf("%s","\n");
-
-    data_h = rlsa_vertical(data_h, h, w, 7);
-    for (int i = 0; i<h; i++)
-    {
-	    for (int j = 0; j<w; j++)
-	    {
-		    printf("%d ", data_h[i][j]);
-	    }
-	    printf("%s","\n");
-    }
-    printf("%s","\n");
-
-    data_v = rlsa_horizontal(data_v, h, w, 7);
-    for (int i = 0; i<h; i++)
-    {
-	    for (int j = 0; j<w; j++)
-	    {
-		    printf("%d ", data_v[i][j]);
-	    }
-	    printf("%s","\n");
-    }
 
     pause();
+
+    lines = rlsa_horizontal(lines, h, w, 3);
+    for (int i = 0; i<h; i++)
+    {
+	    for (int j = 0; j<w; j++)
+	    {
+		    if (lines[i][j] == 1) printf("\033[0;31m");
+		    printf("%d", lines[i][j]);
+		    if (lines[i][j] == 1) printf("\033[0m");
+	    }
+	    printf("%s","\n");
+    }
+    printf("%s","\n");
+
+
+    pause();
+
+    paragraph = rlsa_vertical(lines, h, w, 3);
+    for (int i = 0; i<h; i++)
+    {
+	    for (int j = 0; j<w; j++)
+	    {
+		    if (lines[i][j] == 1) printf("\033[0;31m");
+		    printf("%d", paragraph[i][j]);
+		    if (lines[i][j] == 1) printf("\033[0m");
+	    }
+	    printf("%s","\n");
+    }
+    printf("%s","\n");
 
     SDL_FreeSurface(image_surface);
     SDL_FreeSurface(screen_surface);

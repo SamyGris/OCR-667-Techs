@@ -18,6 +18,20 @@ int** set_matrix(SDL_Surface* image_surface, int** bin_arr)
       }
     return bin_arr;
 }
+
+SDL_Surface* set_image(int** bin_arr, SDL_Surface* image_surface, int h, int w)
+{
+    for (int i = 0; i < h; i++)
+      {
+	for (int j = 0; j < w; j++)
+	  {
+		  if (bin_arr[i][j] == 0) put_pixel(image_surface, i, j, 0);
+		  else put_pixel(image_surface, i, j, 255);
+	  }
+      }
+    return image_surface;
+}
+
 /* return 0 if the pixel with value 0 have at least c 0 next to him or 1 if not */
 /* if we are analizing weigth, w_or_h = 0 for heigth w_or_h = 1 */
 int is_switch(int** bin_arr, int i, int j, int size, int w_or_h, int c)
@@ -27,27 +41,26 @@ int is_switch(int** bin_arr, int i, int j, int size, int w_or_h, int c)
 	if ( w_or_h == 0 )
 	{
 		int x = j;
-		int fail = 0;
-		while ( x < size && x < c+j && fail == 0)
+		while ( x < size && x < c+j && sum == 0)
 		{
-			fail = bin_arr[i][x];
+			sum = bin_arr[i][x];
 			/*printf("%d",(char)bin_arr[i][x]);i*/
 			x++;
 		}
-		if (x < c+j || fail == 1) sum = 1; 
-	}
+		if (c+j >= size || j == 0) sum = 0; 
+	}	
 	else
 	{
 		int y = i;
-		int fail = 0;
-		while (y < size && y < c+i && fail == 0)
+		while (y < size && y < c+i && sum == 0)
 		{
-			fail = bin_arr[y][j];
+			sum = bin_arr[y][j];
 			/*printf("%d",(char)bin_arr[y][j]);*/
 			y++;
 		}
-		if (y < c+i || fail == 1) sum = 1; 
+		if (i+c >= size || i == 0) sum = 0; 
 	}
+	if (sum > 0) sum = 1;
 	/*printf(") : %d\n", sum);*/
 	return sum;
 }	
