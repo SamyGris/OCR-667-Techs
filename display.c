@@ -48,12 +48,12 @@ int main(int argc, char** argv)
     
     pause();
 
-    image_surface = noise_canceled(image_surface);
+    //image_surface = noise_canceled(image_surface);
 
-    update_surface(screen_surface, image_surface);
+    //update_surface(screen_surface, image_surface);
 
-    pause();
-
+    //pause();
+  
     image_surface = segment(image_surface);
 
     update_surface(screen_surface, image_surface);
