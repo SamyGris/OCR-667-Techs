@@ -3,7 +3,9 @@
 #include "SDL/SDL_image.h"
 #include "grayscale.h"
 #include "pixel_operations.h"
-#include "noise_cancel.h"
+#include "median.h"
+#include "otsu.h"
+#include "rlsa.h"
 
 void pause();
 
@@ -43,29 +45,80 @@ int main(int argc, char** argv)
     pause();
 
     image_surface = grayscale(image_surface);
-    
-    update_surface(screen_surface, image_surface);
-    
-    pause();
-
-    //image_surface = noise_canceled(image_surface);
-
-    //update_surface(screen_surface, image_surface);
-
-    //pause();
-  
-    image_surface = segment(image_surface);
 
     update_surface(screen_surface, image_surface);
 
     pause();
 
-    image_surface = increaseChar(image_surface);
+    image_surface = noise_canceled(image_surface);
+
+    update_surface(screen_surface, image_surface);
+
+    pause();
+
+    image_surface = black_n_white(image_surface);
 
     update_surface(screen_surface, image_surface);
 
     pause();
     
+    int w = image_surface->w;
+    int h = image_surface->h;
+
+
+    int **lines;
+    lines = (int **) malloc(sizeof(int *) * h);
+    for (int i = 0; i < h; i++) lines[i] = (int*) malloc(sizeof(int) * w);
+
+    int **paragraph;
+    paragraph = (int **) malloc(sizeof(int *) * h);
+    for (int i = 0; i < h; i++) paragraph[i] = (int*) malloc(sizeof(int) * w);
+
+    lines = set_matrix(image_surface, lines);
+
+    for (int i = 0; i<h; i++)
+    {
+	    for (int j = 0; j<w; j++)
+	    {
+		    if (lines[i][j] == 1) printf("\033[0;31m");
+		    printf("%d", lines[i][j]);
+		    if (lines[i][j] == 1) printf("\033[0m");
+	    }
+	    printf("%s","\n");
+    }
+    printf("%s","\n");
+
+    pause();
+
+    lines = rlsa_horizontal(lines, h, w, 3);
+    for (int i = 0; i<h; i++)
+    {
+	    for (int j = 0; j<w; j++)
+	    {
+		    if (lines[i][j] == 1) printf("\033[0;31m");
+		    printf("%d", lines[i][j]);
+		    if (lines[i][j] == 1) printf("\033[0m");
+	    }
+	    printf("%s","\n");
+    }
+    printf("%s","\n");
+
+
+    pause();
+
+    paragraph = rlsa_vertical(lines, h, w, 3);
+    for (int i = 0; i<h; i++)
+    {
+	    for (int j = 0; j<w; j++)
+	    {
+		    if (lines[i][j] == 1) printf("\033[0;31m");
+		    printf("%d", paragraph[i][j]);
+		    if (lines[i][j] == 1) printf("\033[0m");
+	    }
+	    printf("%s","\n");
+    }
+    printf("%s","\n");
+
     SDL_FreeSurface(image_surface);
     SDL_FreeSurface(screen_surface);
     return 0;

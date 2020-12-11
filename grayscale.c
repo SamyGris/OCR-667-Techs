@@ -45,7 +45,7 @@ unsigned long *get_histogram(SDL_Surface* image_surface, unsigned long *array)
 
 
 
-Uint8 otsu(unsigned long *histogram, int total)
+/*Uint8 otsu(unsigned long *histogram, int total)
 {
     unsigned long sum = 0, wf = 0, sumb = 0;
     unsigned long mb, mf;
@@ -79,7 +79,7 @@ Uint8 otsu(unsigned long *histogram, int total)
 }
 
 
-
+*/
 int moyenneRGB(SDL_Surface* image_surface)
 {
   Uint8 r, g, b;
@@ -103,7 +103,7 @@ int moyenneRGB(SDL_Surface* image_surface)
 
 
 
-SDL_Surface* segment(SDL_Surface* image_surface)
+/*SDL_Surface* segment(SDL_Surface* image_surface)
 {
   unsigned long *hist = malloc(256 * sizeof(unsigned long));
   for(int i = 0; i < 256; i++)
@@ -132,7 +132,7 @@ SDL_Surface* segment(SDL_Surface* image_surface)
     free(hist);
 
     return image_surface;
-}
+}*/
 
 
 
