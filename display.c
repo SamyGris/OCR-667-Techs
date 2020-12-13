@@ -50,11 +50,11 @@ int main(int argc, char** argv)
 
     pause();
 
-    image_surface = noise_canceled(image_surface);
+    /*image_surface = noise_canceled(image_surface);
 
     update_surface(screen_surface, image_surface);
 
-    pause();
+    pause();*/
 
     image_surface = black_n_white(image_surface);
 
@@ -66,23 +66,23 @@ int main(int argc, char** argv)
     int h = image_surface->h;
 
 
-    int **lines;
-    lines = (int **) malloc(sizeof(int *) * h);
-    for (int i = 0; i < h; i++) lines[i] = (int*) malloc(sizeof(int) * w);
+    int **mat_h;
+    mat_h = (int **) malloc(sizeof(int *) * h);
+    for (int i = 0; i < h; i++) mat_h[i] = (int*) malloc(sizeof(int) * w);
 
-    int **paragraph;
-    paragraph = (int **) malloc(sizeof(int *) * h);
-    for (int i = 0; i < h; i++) paragraph[i] = (int*) malloc(sizeof(int) * w);
+    int **mat_v;
+    mat_v = (int **) malloc(sizeof(int *) * h);
+    for (int i = 0; i < h; i++) mat_v[i] = (int*) malloc(sizeof(int) * w);
 
-    lines = set_matrix(image_surface, lines);
+    mat_h = set_matrix(image_surface, mat_h);
 
     for (int i = 0; i<h; i++)
     {
 	    for (int j = 0; j<w; j++)
 	    {
-		    if (lines[i][j] == 1) printf("\033[0;31m");
-		    printf("%d", lines[i][j]);
-		    if (lines[i][j] == 1) printf("\033[0m");
+		    if (mat_h[i][j] == 1) printf("\033[0;31m");
+		    printf("%d", mat_h[i][j]);
+		    if (mat_h[i][j] == 1) printf("\033[0m");
 	    }
 	    printf("%s","\n");
     }
@@ -90,14 +90,14 @@ int main(int argc, char** argv)
 
     pause();
 
-    lines = rlsa_horizontal(lines, h, w, 3);
+    mat_h = rlsa_horizontal(mat_h, h, w, 3);
     for (int i = 0; i<h; i++)
     {
 	    for (int j = 0; j<w; j++)
 	    {
-		    if (lines[i][j] == 1) printf("\033[0;31m");
-		    printf("%d", lines[i][j]);
-		    if (lines[i][j] == 1) printf("\033[0m");
+		    if (mat_h[i][j] == 1) printf("\033[0;31m");
+		    printf("%d", mat_h[i][j]);
+		    if (mat_h[i][j] == 1) printf("\033[0m");
 	    }
 	    printf("%s","\n");
     }
@@ -106,14 +106,14 @@ int main(int argc, char** argv)
 
     pause();
 
-    paragraph = rlsa_vertical(lines, h, w, 3);
+    mat_v = rlsa_vertical(mat_h, h, w, 3);
     for (int i = 0; i<h; i++)
     {
 	    for (int j = 0; j<w; j++)
 	    {
-		    if (lines[i][j] == 1) printf("\033[0;31m");
-		    printf("%d", paragraph[i][j]);
-		    if (lines[i][j] == 1) printf("\033[0m");
+		    if (mat_h[i][j] == 1) printf("\033[0;31m");
+		    printf("%d", mat_v[i][j]);
+		    if (mat_h[i][j] == 1) printf("\033[0m");
 	    }
 	    printf("%s","\n");
     }
