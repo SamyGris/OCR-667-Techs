@@ -33,8 +33,7 @@ int* moy_grey(Uint8* hist, int size)
     }
     if (size > 1)
     {
-	    int tot = data[1];
-	    data[1] = tot/coef;
+	    data[1] /= coef;
     }
     return data;
 }
@@ -44,6 +43,7 @@ float variance(Uint8* hist, int size, int* data)
     float moyen = data[1];
     float var = 0;
     for (int i = 0; i < size; i++) var += hist[i]*(i-moyen)*(i-moyen);
+    printf("%f, ", var/data[0]);
     return var/data[0];
 }
 
