@@ -7,11 +7,11 @@ CFLAGS= -Wall -Wextra -Werror -std=c99 -O3
 LDFLAGS=
 LDLIBS= `pkg-config --libs sdl` -lSDL_image
 
-all: display
+all: test_glade
 
-display: ../Segmentation/rlsa.o ../Pretreats/otsu.o ../Pretreats/median.o ../Pretreats/pixel_operations.o ../Pretreats/grayscale.o display.o
+test_glade: ../Segmentation/rlsa.o ../Pretreats/otsu.o ../Pretreats/median.o ../Pretreats/pixel_operations.o ../Pretreats/grayscale.o test_glade.o 
 
-display.o: ../Segmentation/rlsa.h ../Pretreats/otsu.h ../Pretreats/median.h ../Pretreats/grayscale.h ../Pretreats/pixel_operations.h
+test_glade.o: ../Segmentation/rlsa.h ../Pretreats/otsu.h ../Pretreats/median.h ../Pretreats/grayscale.h ../Pretreats/pixel_operations.h
 
 clean:	-rm *.o
 	-rm *.d
