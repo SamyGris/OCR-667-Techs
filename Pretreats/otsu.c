@@ -43,7 +43,6 @@ float variance(Uint8* hist, int size, int* data)
     float moyen = data[1];
     float var = 0;
     for (int i = 0; i < size; i++) var += hist[i]*(i-moyen)*(i-moyen);
-    printf("%f, ", var/data[0]);
     return var/data[0];
 }
 

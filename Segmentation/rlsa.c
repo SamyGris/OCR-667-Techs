@@ -19,17 +19,16 @@ int** set_matrix(SDL_Surface* image_surface, int** bin_arr)
     return bin_arr;
 }
 
-SDL_Surface* set_image(int** bin_arr, SDL_Surface* image_surface, int h, int w)
+void set_image(int** bin_arr, SDL_Surface* image_surface)
 {
-    for (int i = 0; i < h; i++)
+    for (int i = 0; i < image_surface->h; i++)
       {
-	for (int j = 0; j < w; j++)
+	for (int j = 0; j < image_surface->w; j++)
 	  {
-		  if (bin_arr[i][j] == 0) put_pixel(image_surface, i, j, 0);
-		  else put_pixel(image_surface, i, j, 255);
+		  if (bin_arr[i][j] == 1) put_pixel(image_surface, j, i, SDL_MapRGB(image_surface->format, 0, 0, 0));
+		  else put_pixel(image_surface, j, i, SDL_MapRGB(image_surface->format, 255, 255, 255));
 	  }
       }
-    return image_surface;
 }
 
 /* return 0 if the pixel with value 0 have at least c 0 next to him or 1 if not */
@@ -44,10 +43,9 @@ int is_switch(int** bin_arr, int i, int j, int size, int w_or_h, int c)
 		while ( x < size && x < c+j && sum == 0)
 		{
 			sum = bin_arr[i][x];
-			/*printf("%d",(char)bin_arr[i][x]);i*/
 			x++;
 		}
-		if (c+j >= size || j == 0) sum = 0; 
+		if (x == size || j == 0) sum = 0; 
 	}	
 	else
 	{
@@ -55,13 +53,10 @@ int is_switch(int** bin_arr, int i, int j, int size, int w_or_h, int c)
 		while (y < size && y < c+i && sum == 0)
 		{
 			sum = bin_arr[y][j];
-			/*printf("%d",(char)bin_arr[y][j]);*/
 			y++;
 		}
-		if (i+c >= size || i == 0) sum = 0; 
+		if (i == 0 || y == size) sum = 0; 
 	}
-	if (sum > 0) sum = 1;
-	/*printf(") : %d\n", sum);*/
 	return sum;
 }	
 
@@ -70,7 +65,6 @@ int** rlsa_horizontal(int** bin_arr, int h, int w, int c)
 	int swtch = -1;
 	for (int i = 0; i < h; i++)
 	{
-		/*printf("Line %d :\n",i);*/
 		for (int j = 0; j < w; j++)
 		{
 			if (bin_arr[i][j] == 0 )
@@ -81,7 +75,6 @@ int** rlsa_horizontal(int** bin_arr, int h, int w, int c)
 			else swtch = -1;
 		}
 		swtch = -1;
-		/*printf("%s","\n");*/
 	}
 	return bin_arr;
 }
@@ -92,7 +85,6 @@ int** rlsa_vertical(int** bin_arr, int h, int w, int c)
 	int swtch = -1;
 	for (int j = 0; j < w; j++)
 	{
-		/*printf("Column %d :\n",j);*/
 		for (int i = 0; i < h; i++)
 		{
 			if (bin_arr[i][j] == 0 )
@@ -106,3 +98,40 @@ int** rlsa_vertical(int** bin_arr, int h, int w, int c)
 	}
 	return bin_arr;
 }
+
+int or(int a, int b)
+{
+	if (a == 0 && b == 0) return 0;
+	return 1;
+}
+
+int** rlsa_or(SDL_Surface* image_surface)
+{
+    int w = image_surface->w;
+    int h = image_surface->h;
+
+
+    int **mat1;
+    mat1 = (int **) malloc(sizeof(int *) * h);
+    for (int i = 0; i < h; i++) mat1[i] = (int*) malloc(sizeof(int) * w);
+
+    int **mat2;
+    mat2 = (int **) malloc(sizeof(int *) * h);
+    for (int i = 0; i < h; i++) mat2[i] = (int*) malloc(sizeof(int) * w);
+
+    mat2 = set_matrix(image_surface, mat1);
+
+    mat1 = rlsa_horizontal(mat2, h, w, 15);
+    mat2 = rlsa_vertical(mat2, h, w, 25);
+
+    for (int i = 0; i < h; i++)
+    {
+	    for (int j = 0; j < w; j++)
+	    {
+	    	mat1[i][j] = or(mat1[i][j], mat2[i][j]);
+	    }
+    }
+
+    return mat1;
+} 
+
