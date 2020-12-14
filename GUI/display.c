@@ -1,11 +1,11 @@
 #include <err.h>
 #include "SDL/SDL.h"
 #include "SDL/SDL_image.h"
-#include "grayscale.h"
-#include "pixel_operations.h"
-#include "median.h"
-#include "otsu.h"
-#include "rlsa.h"
+#include "../Pretreats/grayscale.h"
+#include "../Pretreats/pixel_operations.h"
+#include "../Pretreats/median.h"
+#include "../Pretreats/otsu.h"
+#include "../Segmentation/rlsa.h"
 
 void pause();
 

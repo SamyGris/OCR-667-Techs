@@ -1,6 +1,6 @@
 #include <err.h>
 #include "SDL/SDL.h"
-#include "pixel_operations.h"
+#include "../Pretreats/pixel_operations.h"
 
 int** set_matrix(SDL_Surface* image_surface, int** bin_arr)
 {

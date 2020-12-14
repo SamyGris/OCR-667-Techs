@@ -9,12 +9,12 @@ LDLIBS= `pkg-config --libs sdl` -lSDL_image
 
 all: display
 
-display: rlsa.o otsu.o median.o pixel_operations.o grayscale.o display.o
+display: Segmentation/rlsa.o Pretreats/otsu.o Pretreats/median.o Pretreats/pixel_operations.o Pretreats/grayscale.o GUI/display.o
 
-display.o: rlsa.h otsu.h median.h grayscale.h pixel_operations.h
+GUI/display.o: Segmentation/rlsa.h Pretreats/otsu.h Pretreats/median.h Pretreats/grayscale.h Pretreats/pixel_operations.h
 
-clean:	${RM} *.o
-	${RM} *.d
-	${RM} *~
+clean:	-rm *.o
+	-rm *.d
+	-rm *~
 
 # END
