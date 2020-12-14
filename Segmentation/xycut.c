@@ -1,3 +1,12 @@
+#include <err.h>
+#include "SDL/SDL.h"
+#include "SDL/SDL_image.h"
+#include "grayscale.h"
+#include "pixel_operations.h"
+#include "median.h"
+#include "otsu.h"
+#include "rlsa.h"
+
 /*
  * X Y Cut Recursive Algorithm
  * Splits the matrix for each row or column containing only white pixels.
@@ -5,7 +14,7 @@
  * be split anymore.
  *  Returns the list of these splits matrices.
  */
-void xycut(Matrix m, int x1, int y1, int x2, int y2, List *L,Matrix m_to_copy)
+void xycut(int **m, int x1, int y1, int x2, int y2, int *L, int **m_to_copy)
 {
 	int dif_y = y2 - y1;
 	int dif_x = x2 - x1;
@@ -144,26 +153,41 @@ void x_cut(Matrix m, int x1, int y1, int x2, int y2, List *L,Matrix m_to_copy)
  */
 List * segmentation_main(SDL_Surface *img, int *length)
 {
-	Matrix m_grayscale = surface_to_matrix_grayscale(img);
+  img = grayscale(img);
+  img = black_n_white(img);
 
-	int threshold = otsu(m_grayscale);
-	Matrix m_otsu = matrix_grayscale_to_binar(m_grayscale, threshold);
-	free_matrix(m_grayscale);
+  int w = image_surface->w;
+  int h = image_surface->h;
 
-	invert_colors(&m_otsu);
+  int **mat;
+  mat = (int **) malloc(sizeof(int *) * h);
+  for (int i = 0; i < h; i++) mat[i] = (int*) malloc(sizeof(int) * w);
+  mat = set_matrix(img, mat);
+  
+  int **mat_h;
+  mat_h = (int **) malloc(sizeof(int *) * h);
+  for (int i = 0; i < h; i++) mat_h[i] = (int*) malloc(sizeof(int) * w);
 
-	// Blocs
-	Matrix m_hor = rlsa_horizontal(m_otsu, 25);
-	Matrix m_ver = rlsa_vertical(m_otsu, 15);
-	Matrix m_or = matrix_or(m_hor, m_ver);
+  int **mat_v;
+  paragraph = (int **) malloc(sizeof(int *) * h);
+  for (int i = 0; i < h; i++) paragraph[i] = (int*) malloc(sizeof(int) * w);
+
+  int **mat_or;
+  paragraph = (int **) malloc(sizeof(int *) * h);
+  for (int i = 0; i < h; i++) paragraph[i] = (int*) malloc(sizeof(int) * w);
+
+  mat_h = rsla_horizontal(mat, h, w, 25);
+  mat_v = rsla_vertical(mat, h, w, 15);
+  mat_or = matrix_or(mat_h, mat_v, h, w);
 
 	List *list_blocs = new_matrix_list();
-	xycut(m_or, 0, 0, m_or.cols, m_or.rows, list_blocs, m_otsu);
 
-	free_matrix(m_otsu);
-	free_matrix(m_hor);
-	free_matrix(m_ver);
-	free_matrix(m_or);
+  xycut(mat_or, 0, 0, h, w, list_blocs, mat);
+
+  free(mat);
+  free(mat_or);
+  free(mat_h);
+  free(mat_v);
 
 	// Lignes
 	Matrix_list *m_list_blocs = list_blocs->first_matrix;
