@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.1 -->
+<!-- Generated with glade 3.22.2 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
   <object class="GtkWindow" id="window">
@@ -237,7 +237,7 @@
             <signal name="clicked" handler="on_execute_button_clicked" swapped="no"/>
           </object>
           <packing>
-            <property name="x">513</property>
+            <property name="x">762</property>
             <property name="y">175</property>
           </packing>
         </child>
@@ -255,7 +255,7 @@
             <signal name="clicked" handler="on_quit_button_clicked" swapped="no"/>
           </object>
           <packing>
-            <property name="x">672</property>
+            <property name="x">920</property>
             <property name="y">175</property>
           </packing>
         </child>
