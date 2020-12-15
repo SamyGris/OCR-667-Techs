@@ -49,7 +49,7 @@ char* filename;
 GtkBuilder *builder;
 
 
-int main() //our main loop
+int main()
 {
   gtk_init(NULL,NULL); //we initialize the interface
 
@@ -143,12 +143,6 @@ void on_execute_button_clicked()
 	  gtk_container_remove(GTK_CONTAINER(page_fixed3),image4);
 	  gtk_container_remove(GTK_CONTAINER(page_fixed4),image5);
 	}
-      gtk_widget_hide(image_p0);
-      gtk_widget_hide(image_p1);
-      gtk_widget_hide(image_p2);
-      gtk_widget_hide(image_p3);
-      gtk_widget_hide(image_p4);
-      
     }
 
   //we connect the graphic interface with all the OCR functions.
