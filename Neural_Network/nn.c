@@ -37,9 +37,8 @@ struct NeuralNetwork InitializeNetwork()
   struct NeuralNetwork network;
 
   network.nbInputs = 28*28;
-  network.nbHidden = 20;
+  network.nbHidden = 200;
   network.nbOutputs = 52;
-  
 
   network.InputValues = CreateMatrix(52 * nbInputs, 1);
   // Chargement des caractères
