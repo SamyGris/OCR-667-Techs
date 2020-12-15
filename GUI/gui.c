@@ -53,7 +53,7 @@ int main() //our main loop
 {
   gtk_init(NULL,NULL); //we initialize the interface
 
-  builder = gtk_builder_new_from_file("test_glade.glade");
+  builder = gtk_builder_new_from_file("gui.glade");
 
   window = GTK_WIDGET(gtk_builder_get_object(builder,"window")); //we pick up all the GtkFixed
   

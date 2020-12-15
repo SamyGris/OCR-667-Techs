@@ -36,31 +36,19 @@ struct NeuralNetwork InitializeNetwork()
 {
   struct NeuralNetwork network;
 
-  network.nbInputs = 2;
-  network.nbHidden = 2;
-  network.nbOutputs = 1;
+  network.nbInputs = 28*28;
+  network.nbHidden = 20;
+  network.nbOutputs = 52;
+  
 
-  network.InputValues = CreateMatrix(8, 1);
-  ChangeMatrix(network.InputValues, 0, 0, 0);
-  ChangeMatrix(network.InputValues, 1, 0, 0);
-  ChangeMatrix(network.InputValues, 2, 0, 0);
-  ChangeMatrix(network.InputValues, 3, 0, 1);
-  ChangeMatrix(network.InputValues, 4, 0, 1);
-  ChangeMatrix(network.InputValues, 5, 0, 0);
-  ChangeMatrix(network.InputValues, 6, 0, 1);
-  ChangeMatrix(network.InputValues, 7, 0, 1);
+  network.InputValues = CreateMatrix(52 * nbInputs, 1);
+  // Chargement des caractères
 
-  network.Aim = CreateMatrix(8, 1);
-  ChangeMatrix(network.Aim, 0, 0, 0);
-  ChangeMatrix(network.Aim, 2, 0, 1);
-  ChangeMatrix(network.Aim, 4, 0, 1);
-  ChangeMatrix(network.Aim, 6, 0, 0);
+  network.Aim = CreateMatrix(52, 1);
+  // Chargement de l'étiquette
 
-  network.Errors = CreateMatrix(8, 1);
-  ChangeMatrix(network.Errors, 0, 0, 1);
-  ChangeMatrix(network.Errors, 2, 0, 1);
-  ChangeMatrix(network.Errors, 4, 0, 1);
-  ChangeMatrix(network.Errors, 6, 0, 1);
+  network.Errors = CreateMatrix(52, 1);
+  // Initialisation de la matrice à 1
   
   network.WeightsIH = CreateMatrix(network.nbHidden, network.nbInputs);
   network.WeightsHO = CreateMatrix(network.nbOutputs, network.nbHidden);
@@ -91,8 +79,8 @@ struct NeuralNetwork InitializeNetwork()
   InitMatrixZero(network.PreviousWeightsIH);
   InitMatrixZero(network.PreviousBiasH);
   ChangeMatrix(network.SumHOutputs, 0, 0, 0.0);
-  network.LearningRate = 1.5;
-  network.ConstanteUpdate =  0.25;
+  network.LearningRate = 0.5;
+  network.ConstanteUpdate =  1;
   ChangeMatrix(network.PreviousBiasO, 0, 0, 0.0);
   
   return network;
@@ -252,7 +240,7 @@ void Test()
   
   for (int epoch = 0; epoch < nbEpoch; epoch++)
     {
-      for (int i = 0; i < 7; i += 2)
+      for (int i = 0; i < 52*28*28-1; i += 52)
 	{
 	  ForwardPass(network, i);
 	  BackPropagation(network, i);

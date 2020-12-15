@@ -119,7 +119,7 @@ void ForwardPass(struct NeuralNetwork network, int inpValues)
       SumIH += NavMatrix(network.BiasH, h, 0);
       ChangeMatrix(network.SumIH, h, 0, SumIH);
       ChangeMatrix(network.OutputH, h, 0, Sigmoid(SumIH));
-      }
+    }
   
 
   double SumHO = 0;
@@ -127,7 +127,7 @@ void ForwardPass(struct NeuralNetwork network, int inpValues)
     {
       SumHO += NavMatrix(network.WeightsHO, 0, i) *
 	NavMatrix(network.OutputH, i, 0);
-	}
+    }
 
   
   SumHO += NavMatrix(network.BiasO, 0, 0);

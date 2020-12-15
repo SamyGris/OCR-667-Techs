@@ -6,6 +6,7 @@
 #include "median.h"
 #include "otsu.h"
 #include "rlsa.h"
+#include "matrices.h"
 
 /*
  * X Y Cut Recursive Algorithm
@@ -30,7 +31,7 @@ void xycut(int **m, int x1, int y1, int x2, int y2, int *L, int **m_to_copy)
 	{
 		for (int w = 0; w < dif_x; w++)
 		{
-			if (matrix_get(m, w + x1, h + y1))
+			if (NavMatrix(m, w + x1, h + y1))
 			{
 				lines[h] += 1;
 				columns[w] += 1;
@@ -156,21 +157,31 @@ List * segmentation_main(SDL_Surface *img, int *length)
   img = grayscale(img);
   img = black_n_white(img);
 
-  int w = image_surface->w;
-  int h = image_surface->h;
+  int width = image_surface->w;
+  int height = image_surface->h;
 
-  int **mat;
-  mat = (int **) malloc(sizeof(int *) * h);
-  for (int i = 0; i < h; i++) mat[i] = (int*) malloc(sizeof(int) * w);
-  mat = set_matrix(img, mat);
+  Matrix mat = { height, width };
+  InitMatrix(mat);
+  
+  for (int w = 0; w < width; w++)
+    {
+      for (int h = 0; h < height; h++)
+	{
+	  ChangeMatrix(mat, 
+	}
+    }
+
+  mat = ChangeMatrix(img, mat);
   
   int **mat_h;
   mat_h = (int **) malloc(sizeof(int *) * h);
-  for (int i = 0; i < h; i++) mat_h[i] = (int*) malloc(sizeof(int) * w);
+  for (int i = 0; i < h; i++)
+    mat_h[i] = (int*) malloc(sizeof(int) * w);
 
   int **mat_v;
   paragraph = (int **) malloc(sizeof(int *) * h);
-  for (int i = 0; i < h; i++) paragraph[i] = (int*) malloc(sizeof(int) * w);
+  for (int i = 0; i < h; i++)
+    paragraph[i] = (int*) malloc(sizeof(int) * w);
 
   int **mat_or;
   paragraph = (int **) malloc(sizeof(int *) * h);

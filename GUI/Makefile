@@ -1,8 +1,5 @@
-	#OCR Makefile
+#OCR Makefile
 CC=gcc
-
-
-
 CPPFLAGS=   `pkg-config --cflags gtk+-3.0` `pkg-config --cflags sdl` -MMD
 CFLAGS= -Wall -Wextra  -std=c99 -O3
 LDFLAGS=$(PTHREAD) $(GTKLIB) -export-dynamic
@@ -13,7 +10,7 @@ SRC= test_glade.c ../Pretreats/median.c ../Pretreats/grayscale.c ../Pretreats/pi
 OBJ=${SRC:.c=.o}
 DEP=${SRC:.c=.d}
 
-all: test_glade 
+all: gui
 
 test_glade:${OBJ}
 
