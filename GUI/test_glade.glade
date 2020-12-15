@@ -97,7 +97,6 @@
                     <property name="height_request">80</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="pixbuf">albert.jpg</property>
                   </object>
                 </child>
               </object>
@@ -116,7 +115,6 @@
                     <property name="height_request">80</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="pixbuf">albert.jpg</property>
                   </object>
                 </child>
               </object>
@@ -136,7 +134,6 @@
                     <property name="height_request">80</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="pixbuf">albert.jpg</property>
                   </object>
                 </child>
               </object>
@@ -156,7 +153,6 @@
                     <property name="height_request">80</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="pixbuf">albert.jpg</property>
                   </object>
                 </child>
               </object>
@@ -176,7 +172,6 @@
                     <property name="height_request">80</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="stock">gtk-discard</property>
                   </object>
                 </child>
               </object>
@@ -190,6 +185,17 @@
               <object class="GtkFixed" id="page_fixed5">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkTextView" id="result">
+                    <property name="width_request">753</property>
+                    <property name="height_request">458</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                  </object>
+                  <packing>
+                    <property name="y">4</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="name">page5</property>
@@ -228,6 +234,7 @@
             <property name="use_stock">True</property>
             <property name="image_position">bottom</property>
             <property name="always_show_image">True</property>
+            <signal name="clicked" handler="on_execute_button_clicked" swapped="no"/>
           </object>
           <packing>
             <property name="x">513</property>
@@ -250,6 +257,30 @@
           <packing>
             <property name="x">672</property>
             <property name="y">175</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="copyright">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">By 667 Tech.</property>
+          </object>
+          <packing>
+            <property name="x">650</property>
+            <property name="y">70</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Instructions :
+1.	Select an image .
+2.	Click on 'Execute' to display the result !</property>
+          </object>
+          <packing>
+            <property name="x">257</property>
+            <property name="y">120</property>
           </packing>
         </child>
       </object>

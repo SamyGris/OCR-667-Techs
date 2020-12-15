@@ -1,3 +1,5 @@
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -50,13 +52,15 @@ GtkWidget *stack1;
 GtkWidget *frame1;
 GtkWidget *labelchoose;
 
+char* filename;
+
 
 
 
 GtkBuilder *builder;
 
 
-int main(int argc, char *argv[])
+int main()
 {
   gtk_init(NULL,NULL);
 
@@ -92,7 +96,7 @@ int main(int argc, char *argv[])
   color.red =0x8c8c ;
   color.green = 0xb3b3;
   color.blue = 0xdada;
-  gtk_widget_modify_bg(GTK_WIDGET(window),GTK_STATE_NORMAL,&color);
+  //gtk_widget_modify_bg(GTK_WIDGET(window),GTK_STATE_NORMAL,&color);
 
 
 
@@ -106,8 +110,10 @@ int main(int argc, char *argv[])
   gtk_widget_show(window);
  
   
+  
   gtk_main();
-
+  unlink("cache");
+  rmdir("cache");
 
   return EXIT_SUCCESS;      
   
@@ -120,16 +126,23 @@ void on_quit_button_clicked(GtkButton *b1)
 
 void on_button1_clicked(GtkFileChooserButton *b)
 {
+   filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER(b));
+   printf("%s \n", filename);
+}
+
+void on_execute_button_clicked(GtkFileChooserButton *b2)
+{
+  printf("%s \n", filename);
+  unlink("cache");
+  rmdir("cache");
   gtk_widget_hide(image_p0);
   gtk_widget_hide(image_p1);
   gtk_widget_hide(image_p2);
   gtk_widget_hide(image_p3);
   gtk_widget_hide(image_p4);
- 
-  printf("file name = %s\n", gtk_file_chooser_get_filename (GTK_FILE_CHOOSER(b)) );
-  printf("folder name = %s\n", gtk_file_chooser_get_current_folder (GTK_FILE_CHOOSER(b)) );
 
-  char* filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER(b));
+
+ 
   int i = 0;
   int res = 0;
   while (filename[i])
@@ -139,10 +152,8 @@ void on_button1_clicked(GtkFileChooserButton *b)
     }
   printf("%d\n",res);
 
-  FILE *f1;
-
-  if((filename[res-1]=='g')&&(((filename[res-2]=='p')||
-  (filename[res-2]=='n'))&&((filename[res-3]=='j')||(filename[res-3]=='p'))))
+  if((filename[res-1]=='g')&&(((filename[res-2]=='p')
+||(filename[res-2]=='n'))&&((filename[res-3]=='j')||(filename[res-3]=='p'))))
     {
       if(image1)
 	{
@@ -150,76 +161,15 @@ void on_button1_clicked(GtkFileChooserButton *b)
 	  gtk_container_remove(GTK_CONTAINER(page_fixed1),image2);
 	  gtk_container_remove(GTK_CONTAINER(page_fixed2),image3);
 	  gtk_container_remove(GTK_CONTAINER(page_fixed3),image4);
-	  gtk_container_remove(GTK_CONTAINER(page_fixed3),image5);
+	  gtk_container_remove(GTK_CONTAINER(page_fixed4),image5);
 	}
       gtk_widget_hide(image_p0);
       gtk_widget_hide(image_p1);
       gtk_widget_hide(image_p2);
       gtk_widget_hide(image_p3);
       gtk_widget_hide(image_p4);
-      char cmd[2048];
-      int hor = 0, ver = 0;
-      int j, h, v;
       
-      
-      //resize image
-      
-      sprintf(cmd, "identify -format %%wx%%h \"%s\"\n", filename);
-      
-      f1 = popen(cmd, "r");
-      
-      strcpy(cmd,"");
-      fgets(cmd, 512, f1);
-      fclose (f1);
-      
-      h = v = 1;
-      
-      if (strlen(cmd)) {
-	for (j=0; j<strlen(cmd)-1; j++) if (cmd[j] == 'x') break;
-	if (cmd[j] == 'x') { // x is a delimiter between horizontal and vertical
-	  cmd[j] = 0;
-	  sscanf(cmd,"%d",&h);
-	  sscanf(&cmd[j+1], "%d", &v);
-	}
-      }
-      
-      if (h < 100 || v < 100 ) {
-	printf("**** questionable image: %s\n",filename);
-	return;	// probably a bad image
-      }
-      
-      //	---------------------------------------------------------------
-      //	RESIZE image.  convert() is part of ImageMagick
-      //	---------------------------------------------------------------
-      
-      int width = 488; 
-      int height = 468;
-      
-      sprintf(cmd, "convert \"%s\" -resize %dx%d tmp.jpg", filename, width, height);
-      system(cmd);
-      
-      strcpy(filename,"tmp.jpg");
-      
-      //	---------------------------------------------------------------
-      //	Get new image dimensions  - actual dimensions will be in the
-      //	range of the conversion. Conversion will maintain ratio.
-      //	---------------------------------------------------------------
-      
-      sprintf(cmd, "identify -format %%wx%%h \"%s\"\n", filename);
-      f1 = popen(cmd, "r");
-      strcpy(cmd,"");
-      fgets(cmd, 512, f1);
-      fclose (f1);
-      h = v = 1;
-      
-      if (strlen(cmd)) {
-	for (j=0; j<strlen(cmd)-1; j++) if (cmd[j] == 'x') break;
-	if (cmd[j] == 'x') {
-	  cmd[j] = 0;
-	  sscanf(cmd,"%d",&h);
-	  sscanf(&cmd[j+1], "%d", &v);
-	}
-      }
+    }
       
       //	---------------------------------------------------------------
       //	h and v are now the actual new dimensions which you can use
@@ -227,56 +177,57 @@ void on_button1_clicked(GtkFileChooserButton *b)
       //	---------------------------------------------------------------
 
 
-      system("mkdir cache");
+      mkdir("cache", 0777);
+
       SDL_Surface *img = IMG_Load(filename);
+      remove("cache/base");
+      gtk_container_remove(GTK_CONTAINER(page_fixed0),image1);
+      SDL_SaveBMP(img, "cache/base");
+      image1 = gtk_image_new_from_file("cache/base");
+      gtk_container_add (GTK_CONTAINER (page_fixed0), image1);
+      gtk_widget_show(image1);
+     
       
       SDL_Surface *grayscale_img = grayscale(img);
-      SDL_Surface *median_img = noise_canceled(grayscale_img);
-      SDL_Surface *binarized_img = black_n_white(median_img);
-      int** rlsaor_mat = rlsa_or(binarized_img);
-      SDL_Surface *rlsaor_img;
-      set_image(rlsaor_mat, rlsaor_img);
-
-      SDL_SaveBMP(grayscale_img, "cache/grayscale.png");
-      SDL_SaveBMP(median_img, "cache/median.png");
-      SDL_SaveBMP(binarized_img, "cache/binarized.png");
-      SDL_SaveBMP(rlsaor_img, "cache/rlsa.png");
-
-      image1 = gtk_image_new_from_file (filename);
-      image2 = gtk_image_new_from_file ("cache/grayscale.png");
-      image3 = gtk_image_new_from_file ( "cache/median.png");
-      image4 = gtk_image_new_from_file ("cache/binarized.png");
-      image5 = gtk_image_new_from_file ("cache/rlsa.png");
-      
-      gtk_container_add (GTK_CONTAINER (page_fixed0), image1);
-      gtk_container_add (GTK_CONTAINER (page_fixed1), image2);
-      gtk_container_add (GTK_CONTAINER (page_fixed2), image3);
-      gtk_container_add (GTK_CONTAINER (page_fixed3), image4);
-      gtk_container_add (GTK_CONTAINER (page_fixed4), image5);
-      
-      gtk_widget_show(image1);
+      remove("cache/grayscale");
+      gtk_container_remove(GTK_CONTAINER(page_fixed1),image2);
+      SDL_SaveBMP(grayscale_img, "cache/grayscale");
+      image2 = gtk_image_new_from_file("cache/grayscale");
+      gtk_container_add (GTK_CONTAINER(page_fixed1), image2);
       gtk_widget_show(image2);
+      
+      SDL_Surface *median_img = noise_canceled(grayscale_img);
+      remove("cache/median");
+      gtk_container_remove(GTK_CONTAINER(page_fixed2),image3);
+      SDL_SaveBMP(median_img, "cache/median");
+      image3 = gtk_image_new_from_file( "cache/median");
+      gtk_container_add (GTK_CONTAINER(page_fixed2), image3);
       gtk_widget_show(image3);
+      
+      SDL_Surface *binarized_img = black_n_white(grayscale_img);
+      remove("cache/binarized");
+      gtk_container_remove(GTK_CONTAINER(page_fixed3),image4);
+      SDL_SaveBMP(binarized_img, "cache/binarized");
+      image4 = gtk_image_new_from_file("cache/binarized");
+      gtk_container_add (GTK_CONTAINER(page_fixed3), image4);
       gtk_widget_show(image4);
+      
+      int** rlsaor_mat = rlsa_or(binarized_img);
+
+      SDL_Surface *rlsaor_img = binarized_img;
+      set_image(rlsaor_mat, rlsaor_img);
+      remove("cache/rlsa");
+      gtk_container_remove(GTK_CONTAINER(page_fixed4),image5);
+      SDL_SaveBMP(rlsaor_img, "cache/rlsa");
+      image5 = gtk_image_new_from_file("cache/rlsa");
+      gtk_container_add (GTK_CONTAINER(page_fixed4), image5);
       gtk_widget_show(image5);
-      
-      gtk_fixed_move (GTK_FIXED(page_fixed0), image1, hor, ver);
-      gtk_fixed_move (GTK_FIXED(page_fixed1), image2, hor, ver);
-      gtk_fixed_move (GTK_FIXED(page_fixed2), image3, hor, ver);
-      gtk_fixed_move (GTK_FIXED(page_fixed3), image4, hor, ver);
-      gtk_fixed_move (GTK_FIXED(page_fixed4), image5, hor, ver);
-      
-      system("rm tmp.jpg");
-      system("rm -rf cache");
-      
-    }
-  else
-    {
-      // gtk_label_set_text(GTK_LABEL(labelerror),(const gchar*) "Not a image");
-      //printf("c'est pas une image %s", "...");
-      
-    }
-  
+
+      /* gtk_container_remove(GTK_CONTAINER(page_fixed0),image1);
+      gtk_container_remove(GTK_CONTAINER(page_fixed1),image2);
+      gtk_container_remove(GTK_CONTAINER(page_fixed2),image3);
+      gtk_container_remove(GTK_CONTAINER(page_fixed3),image4);
+      gtk_container_remove(GTK_CONTAINER(page_fixed4),image5);*/
 }
 
 
