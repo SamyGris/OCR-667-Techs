@@ -1,0 +1,20 @@
+# Simple SDL mini Makefile
+
+CC=gcc
+
+CPPFLAGS= `pkg-config --cflags sdl` -MMD
+CFLAGS= -Wall -Wextra -std=c99 -O3 `pkg-config --cflags --libs gtk+-3.0`
+LDFLAGS=
+LDLIBS= `pkg-config --libs sdl` -lSDL_image
+
+all: display
+
+display: ../Segmentation/rlsa.o ../Pretreats/otsu.o ../Pretreats/median.o ../Pretreats/pixel_operations.o ../Pretreats/grayscale.o display.o 
+
+display.o: ../Segmentation/rlsa.h ../Pretreats/otsu.h ../Pretreats/median.h ../Pretreats/grayscale.h ../Pretreats/pixel_operations.h
+
+clean:	-rm *.o
+	-rm *.d
+	-rm *~
+
+# END
