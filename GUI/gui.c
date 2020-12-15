@@ -12,11 +12,11 @@
 #include <err.h>
 #include "SDL/SDL.h"
 #include "SDL/SDL_image.h"
-#include "../../OCR-667-Techs/Pretreats/median.h"
-#include "../../OCR-667-Techs/Pretreats/otsu.h"
-#include "../../OCR-667-Techs/Pretreats/pixel_operations.h"
-#include "../../OCR-667-Techs/Pretreats/grayscale.h"
-#include "../../OCR-667-Techs/Segmentation/rlsa.h"
+#include "../Pretreats/median.h"
+#include "../Pretreats/otsu.h"
+#include "../Pretreats/pixel_operations.h"
+#include "../Pretreats/grayscale.h"
+#include "../Segmentation/rlsa.h"
 
 
 
