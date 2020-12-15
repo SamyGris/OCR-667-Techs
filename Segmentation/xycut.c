@@ -1,13 +1,11 @@
 #include <err.h>
 #include "SDL/SDL.h"
-#include "SDL/SDL_image.h"
-#include "grayscale.h"
-#include "pixel_operations.h"
-#include "median.h"
-#include "otsu.h"
-#include "rlsa.h"
+#include "../Pretreats/pixel_operations.h"
+#include "../Pretreats/grayscale.h"
+#include "../Pretreats/median.h"
+#include "../Pretreats/otsu.h"
 #include "matrices.h"
-
+#include "rlsa.h"
 /*
  * X Y Cut Recursive Algorithm
  * Splits the matrix for each row or column containing only white pixels.
@@ -15,7 +13,51 @@
  * be split anymore.
  *  Returns the list of these splits matrices.
  */
-void xycut(int **m, int x1, int y1, int x2, int y2, int *L, int **m_to_copy)
+
+typedef struct Matrix_list
+{
+    struct Matrix matrix;
+    struct Matrix_list *next_matrix;
+    struct List *children;
+}Matrix_list;
+
+typedef struct List
+{
+    Matrix_list *first_matrix;
+    Matrix_list *last_matrix;
+}List;
+
+void matrix_list_add(struct List *list, struct Matrix m)
+{
+    Matrix_list *m_list = malloc(sizeof(*m_list));
+
+    m_list->matrix = m;
+    m_list->next_matrix = NULL;
+    m_list->children = NULL;
+
+    if (list->last_matrix == NULL)
+    {
+        list->first_matrix = m_list;
+        list->last_matrix = m_list;
+    }
+    else
+    {
+        list->last_matrix->next_matrix = m_list;
+        list->last_matrix = m_list;
+    }
+}
+
+List *new_matrix_list()
+{
+    List *list = malloc(sizeof(*list));
+
+    list->first_matrix = NULL;
+    list->last_matrix = NULL;
+
+    return list;
+}
+
+void xycut(struct Matrix m, int x1, int y1, int x2, int y2, struct List *L,struct Matrix m_to_copy)
 {
 	int dif_y = y2 - y1;
 	int dif_x = x2 - x1;
@@ -31,7 +73,7 @@ void xycut(int **m, int x1, int y1, int x2, int y2, int *L, int **m_to_copy)
 	{
 		for (int w = 0; w < dif_x; w++)
 		{
-			if (NavMatrix(m, w + x1, h + y1))
+			if (NavMatrix(m, w + x1, h + y1) == 1)
 			{
 				lines[h] += 1;
 				columns[w] += 1;
@@ -64,7 +106,7 @@ void xycut(int **m, int x1, int y1, int x2, int y2, int *L, int **m_to_copy)
 
 			if (width == dif_x && height == dif_y)
 			{
-				matrix_list_add(L, matrix_copy(m_to_copy, x1, y1, x2, y2));
+				matrix_list_add(L, CopyMatrix(m_to_copy, x1, y1, x2, y2));
 				// color_char(img, x1, y1, x2, y2); //Debug purpose only
 			}
 				else
@@ -83,7 +125,7 @@ void xycut(int **m, int x1, int y1, int x2, int y2, int *L, int **m_to_copy)
  * (doesn't seperate letters as i and j)
  */
 
-void x_cut(Matrix m, int x1, int y1, int x2, int y2, List *L,Matrix m_to_copy)
+void x_cut(struct Matrix m, int x1, int y1, int x2, int y2, List *L,struct Matrix m_to_copy)
 {
 	size_t dif_y = y2 - y1;
 	size_t dif_x = x2 - x1;
@@ -96,7 +138,7 @@ void x_cut(Matrix m, int x1, int y1, int x2, int y2, List *L,Matrix m_to_copy)
 	{
 		for (size_t w = 0; w < dif_x; w++)
 		{
-			if (matrix_get(m, w + x1, h + y1))
+			if (NavMatrix(m, w + x1, h + y1))
 			{
 				columns[w] += 1;
 			}
@@ -123,7 +165,7 @@ void x_cut(Matrix m, int x1, int y1, int x2, int y2, List *L,Matrix m_to_copy)
 
 			for (size_t h = 0; h < dif_y; h++)
 				for (size_t w = first_x; w < x; w++)
-					if (matrix_get(m, w + x1, h + y1))
+					if (NavMatrix(m, w + x1, h + y1))
 						lines[h] += 1;
 
 			size_t first_y = 0;
@@ -134,9 +176,8 @@ void x_cut(Matrix m, int x1, int y1, int x2, int y2, List *L,Matrix m_to_copy)
 			while (last_y > first_y && lines[last_y - 1] == 0)
 				last_y--;
 
-			matrix_list_add(L, matrix_copy(m_to_copy, x1 + first_x, y1 + first_y, 
+			matrix_list_add(L, CopyMatrix(m_to_copy, x1 + first_x, y1 + first_y, 
 						x1 + x, y1 + last_y));
-			// color_char(img, x1, y1, x2, y2); //Debug purpose only
 		}
 	}
 }
@@ -152,53 +193,23 @@ void x_cut(Matrix m, int x1, int y1, int x2, int y2, List *L,Matrix m_to_copy)
  * lines, words and finaly chars.
  * It returns a tree of matrices containing the characters in the leaves.
  */
-List * segmentation_main(SDL_Surface *img, int *length)
+List * segmentation_main(SDL_Surface *img)
 {
-  img = grayscale(img);
-  img = black_n_white(img);
+	img = grayscale(img);
+	img = noise_canceled(img);
+	img = black_n_white(img);
+	
+	int **mat;
+        mat = (int **) malloc(sizeof(int *) * img->h);
+        for (int i = 0; i < img->h; i++) mat[i] = (int*) malloc(sizeof(int) * img->w);
 
-  int width = image_surface->w;
-  int height = image_surface->h;
-
-  Matrix mat = { height, width };
-  InitMatrix(mat);
-  
-  for (int w = 0; w < width; w++)
-    {
-      for (int h = 0; h < height; h++)
-	{
-	  ChangeMatrix(mat, 
-	}
-    }
-
-  mat = ChangeMatrix(img, mat);
-  
-  int **mat_h;
-  mat_h = (int **) malloc(sizeof(int *) * h);
-  for (int i = 0; i < h; i++)
-    mat_h[i] = (int*) malloc(sizeof(int) * w);
-
-  int **mat_v;
-  paragraph = (int **) malloc(sizeof(int *) * h);
-  for (int i = 0; i < h; i++)
-    paragraph[i] = (int*) malloc(sizeof(int) * w);
-
-  int **mat_or;
-  paragraph = (int **) malloc(sizeof(int *) * h);
-  for (int i = 0; i < h; i++) paragraph[i] = (int*) malloc(sizeof(int) * w);
-
-  mat_h = rsla_horizontal(mat, h, w, 25);
-  mat_v = rsla_vertical(mat, h, w, 15);
-  mat_or = matrix_or(mat_h, mat_v, h, w);
+	// Blocs
+	//struct Matrix m_hor = SetMatrix(rlsa_horizontal(set_matrix(img, mat), img->h, img->w, 25));
+	//struct Matrix m_ver = SetMatrix(rlsa_vertical(set_matrix(img, mat), img->h, img->w, 15));
+	struct Matrix m_or = SetMatrix(rlsa_or(img), img->h, img->w);
 
 	List *list_blocs = new_matrix_list();
-
-  xycut(mat_or, 0, 0, h, w, list_blocs, mat);
-
-  free(mat);
-  free(mat_or);
-  free(mat_h);
-  free(mat_v);
+	xycut(m_or, 0, 0, m_or.columns, m_or.rows, list_blocs, SetMatrix(set_matrix(img, mat), img->h, img->w));
 
 	// Lignes
 	Matrix_list *m_list_blocs = list_blocs->first_matrix;
@@ -207,12 +218,9 @@ List * segmentation_main(SDL_Surface *img, int *length)
 		List *list_lines = new_matrix_list();
 		m_list_blocs->children = list_lines;
 
-		invert_colors(&m_list_blocs->matrix);
-
-		Matrix m_hor_lines = rlsa_horizontal(m_list_blocs->matrix, 25);
-		xycut(m_hor_lines, 0, 0, m_hor_lines.cols,\
+		struct Matrix m_hor_lines = SetMatrix(rlsa_horizontal(ReverseSetMatrix(m_list_blocs->matrix), img->h, img->w, 25), img->h, img->w);
+		xycut(m_hor_lines, 0, 0, m_hor_lines.columns,\
 				m_hor_lines.rows, list_lines, m_list_blocs->matrix);
-		free_matrix(m_hor_lines);
 
 		// Words
 		Matrix_list *m_list_lines = list_lines->first_matrix;
@@ -221,10 +229,9 @@ List * segmentation_main(SDL_Surface *img, int *length)
 			List *list_words = new_matrix_list();
 			m_list_lines->children = list_words;
 
-			Matrix m_hor_words = rlsa_horizontal(m_list_lines->matrix, 5);
-			x_cut(m_hor_words, 0, 0, m_hor_words.cols, m_hor_words.rows,
+			struct Matrix m_hor_words = SetMatrix(rlsa_vertical(ReverseSetMatrix(m_list_blocs->matrix), img->h, img->w, 15), img->h, img->w);
+			x_cut(m_hor_words, 0, 0, m_hor_words.columns, m_hor_words.rows,
 					list_words, m_list_lines->matrix);
-			free_matrix(m_hor_words);
 
 			// Characters
 			Matrix_list *m_list_words = list_words->first_matrix;
@@ -233,19 +240,14 @@ List * segmentation_main(SDL_Surface *img, int *length)
 				List *list_chars = new_matrix_list();
 				m_list_words->children = list_chars;
 
-				x_cut(m_list_words->matrix, 0, 0, m_list_words->matrix.cols,\
+				x_cut(m_list_words->matrix, 0, 0, m_list_words->matrix.columns,\
 m_list_words->matrix.rows, list_chars, m_list_words->matrix);
 
-				*length += (int) matrix_list_length(list_chars);
-				*length += 1;
 				m_list_words = m_list_words->next_matrix;
 			}
 
-			*length += 1;
 			m_list_lines = m_list_lines->next_matrix;
 		}
-
-		*length += 1;
 		m_list_blocs = m_list_blocs->next_matrix;
 	}
 
